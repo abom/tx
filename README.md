@@ -1,5 +1,6 @@
 # tx
-Accounts transactions challenge
+Accounts transactions challenge (tested with go version of `go version go1.14.2 linux/amd64
+`)
 
 ## Building
 
