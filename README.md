@@ -10,7 +10,7 @@ go build
 Then to run the server
 
 ```
-./tx -path=/home/abom/Downloads/accounts-mock.json
+./tx -path=/path/to/accounts-mock.json
 ```
 
 To see more options:
