@@ -18,6 +18,8 @@ import (
 func main() {
 	path := flag.String("path", "", "path to accounts mock file in json format")
 	timeout := flag.String("timeout", "10s", "transaction timeout e.g. 10s")
+	host := flag.String("host", "127.0.0.1", "server host, defaults to '127.0.0.1'")
+	port := flag.String("port", "8000", "server port, defaults to '8000'")
 
 	flag.Parse()
 
@@ -50,7 +52,7 @@ func main() {
 
 	server := &http.Server{
         Handler:      router,
-        Addr:         "127.0.0.1:8000",
+        Addr:         fmt.Sprintf("%s:%s", *host, *port),
 	}
 
 	err = server.ListenAndServe()
