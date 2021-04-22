@@ -49,12 +49,11 @@ func main() {
 		Addr:    addr,
 	}
 
+	log.Printf("Starting server at at %s", addr)
 	err = server.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	log.Printf("Server is ready at %s", addr)
 
 	defer queueProcessor.Stop()
 }
