@@ -40,9 +40,14 @@ Base URL would be `http://localhost:8000/api/v1`
 
 ## Running tests
 
-Only processor tests for now, to run them
+Running all tests
 
 ```
-go install github.com/abom/tx
-go test github.com/abom/tx/processor
+go test ./...
+```
+
+Running API tests:
+
+```
+go test github.com/abom/tx/rest
 ```
