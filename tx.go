@@ -7,13 +7,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gorilla/mux"
-
-	"github.com/abom/tx/store"
 	"github.com/abom/tx/processor"
 	"github.com/abom/tx/rest"
+	"github.com/abom/tx/store"
 )
-
 
 func main() {
 	path := flag.String("path", "", "path to accounts mock file in json format")
@@ -30,7 +27,10 @@ func main() {
 
 	storage, err := store.NewMemoryStoreFromFile(*path)
 	if err != nil {
+		log.Printf("couldn't load accounts from '%s'", *path)
 		log.Fatal(err)
+	} else {
+		log.Printf("accounts load successfully from '%s'", *path)
 	}
 
 	queueProcessor := processor.NewProcessor(storage)
@@ -42,23 +42,19 @@ func main() {
 	}
 
 	handlers := rest.NewHandlers(storage, queueProcessor, transactionTimeout)
-
-	router := mux.NewRouter()
-	apiRouter := router.PathPrefix(fmt.Sprintf("/api/v%s", rest.VERSION)).Subrouter()
-
-	apiRouter.HandleFunc("/accounts", handlers.AccountsHandler)
-	apiRouter.HandleFunc("/account/{id}", handlers.AccountHandler)
-	apiRouter.HandleFunc("/transfer", handlers.TransferHandler).Methods("POST")
-
+	router := rest.GetRouter(handlers)
+	addr := fmt.Sprintf("%s:%s", *host, *port)
 	server := &http.Server{
-        Handler:      router,
-        Addr:         fmt.Sprintf("%s:%s", *host, *port),
+		Handler: router,
+		Addr:    addr,
 	}
 
 	err = server.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	log.Printf("Server is ready at %s", addr)
 
 	defer queueProcessor.Stop()
 }

@@ -9,9 +9,9 @@ import (
 const MAX_TX = 100
 
 type Processor struct {
-	id string
+	id           string
 	transactions chan *Transaction
-	running bool
+	running      bool
 
 	storage *store.MemoryStore
 }
@@ -22,7 +22,7 @@ func NewProcessor(storage *store.MemoryStore) *Processor {
 
 	processor = &Processor{
 		transactions: make(chan *Transaction, MAX_TX),
-		storage: storage,
+		storage:      storage,
 	}
 
 	return processor

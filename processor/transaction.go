@@ -9,30 +9,32 @@ import (
 
 type TransactionStatus int
 
-const(
-    Pending TransactionStatus = iota
-    Success
+const (
+	Pending TransactionStatus = iota
+	Success
 	Invalid
 	Timeout
 )
 
 type Transaction struct {
-	From string `json:"from"`
-	To string `json:"to"`
+	From   string     `json:"from"`
+	To     string     `json:"to"`
 	Amount *big.Float `json:"amount"`
 
 	Status TransactionStatus `json:"-"`
-	Error string `json:"-"`
+	Error  string            `json:"-"`
 }
 
 func NewTransaction(from string, to string, amount float64) *Transaction {
 	return &Transaction{
-		From: from,
-		To: to,
+		From:   from,
+		To:     to,
 		Amount: big.NewFloat(amount),
 	}
 }
 
+// wait for transaction to be committed
+// if timeout is <= 0, it won't timeout
 func (t *Transaction) Wait(timeout time.Duration) error {
 	started := time.Now()
 
@@ -46,7 +48,7 @@ func (t *Transaction) Wait(timeout time.Duration) error {
 		}
 
 		if timeout > 0 {
-			now :=  time.Now()
+			now := time.Now()
 			diff := now.Sub(started)
 			if diff > timeout {
 				return errors.New(fmt.Sprintf("wait timeout of %s exceeded, transaction still pending", timeout.String()))

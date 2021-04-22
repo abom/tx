@@ -2,39 +2,39 @@ package rest
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"time"
 
 	"github.com/gorilla/mux"
 
-	"github.com/abom/tx/store"
 	"github.com/abom/tx/processor"
+	"github.com/abom/tx/store"
 )
 
 const VERSION = "1"
 
 type Handlers struct {
-	Store *store.MemoryStore
+	Store     *store.MemoryStore
 	Processor *processor.Processor
 
 	TransactionTimeout time.Duration
 }
 
-
 // return a new handlers given the store and processor
 func NewHandlers(s *store.MemoryStore, p *processor.Processor, t time.Duration) *Handlers {
 	return &Handlers{
-		Store: s,
-		Processor: p,
+		Store:              s,
+		Processor:          p,
 		TransactionTimeout: t,
 	}
 }
 
 func writeJson(status int, w http.ResponseWriter, value interface{}) error {
 	w.Header().Set("Content-Type", "application/json")
-    w.WriteHeader(status)
+	w.WriteHeader(status)
 
 	res, err := json.Marshal(value)
 	if err != nil {
@@ -47,7 +47,7 @@ func writeJson(status int, w http.ResponseWriter, value interface{}) error {
 func writeStatus(status int, w http.ResponseWriter, message string) error {
 	return writeJson(status, w, map[string]interface{}{
 		"message": message,
-		"status": status,
+		"status":  status,
 	})
 }
 
@@ -63,7 +63,7 @@ func (h *Handlers) AccountHandler(w http.ResponseWriter, r *http.Request) {
 
 	account := h.Store.Get(id)
 	if account == nil {
-		writeStatus(404, w, "account cannot be found")
+		writeStatus(404, w, fmt.Sprintf("account '%s' cannot be found", id))
 	} else {
 		writeJson(200, w, account)
 	}
@@ -91,4 +91,15 @@ func (h *Handlers) TransferHandler(w http.ResponseWriter, r *http.Request) {
 			writeStatus(200, w, "Transaction completed successfully")
 		}
 	}
+}
+
+func GetRouter(handlers *Handlers) *mux.Router {
+	router := mux.NewRouter()
+	apiRouter := router.PathPrefix(fmt.Sprintf("/api/v%s", VERSION)).Subrouter()
+
+	apiRouter.HandleFunc("/accounts", handlers.AccountsHandler).Methods("GET")
+	apiRouter.HandleFunc("/account/{id}", handlers.AccountHandler).Methods("GET")
+	apiRouter.HandleFunc("/transfer", handlers.TransferHandler).Methods("POST")
+
+	return router
 }

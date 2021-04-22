@@ -6,4 +6,3 @@ type Store interface {
 	Set(id string, account *Account)
 	GetAll() []*Account
 }
-
