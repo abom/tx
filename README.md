@@ -11,8 +11,11 @@ go build
 Then to run the server
 
 ```
-./tx -path=/path/to/accounts-mock.json
+./tx -path=data/accounts.json
 ```
+
+The server will be running on `http://localhost:8000` by default.
+
 
 To see more options:
 
@@ -20,13 +23,26 @@ To see more options:
 ./tx
 ```
 
+Would output
+
+```
+Usage of ./tx:
+  -host string
+    	server host, defaults to '127.0.0.1' (default "127.0.0.1")
+  -path string
+    	path to accounts mock file in json format
+  -port string
+    	server port, defaults to '8000' (default "8000")
+  -timeout string
+    	transaction timeout e.g. 10s (default "10s")
+
+```
+
 To install
 
 ```
 go install github.com/abom/tx
 ```
-
-The server will be running on `http://localhost:8000`
 
 ## API Endpoints
 
