@@ -4,6 +4,8 @@ Accounts transactions challenge (tested with go version of `go version go1.14.2 
 
 ## Building
 
+You can build the binary from source or [just install it directly](#installation)
+
 ```
 go build
 ```
@@ -38,11 +40,14 @@ Usage of ./tx:
 
 ```
 
-To install
+## Installation
+To install it directly, you can do
 
 ```
-go install github.com/abom/tx
+go install github.com/abom/tx@latest
 ```
+
+After this `tx` command should be available (binary would be added to `PATH`).
 
 ## API Endpoints
 
